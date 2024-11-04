@@ -2,11 +2,17 @@ use axum::{extract::Query, response::{Html, IntoResponse}, routing::{get, get_se
 use serde::Deserialize;
 use tokio::net::TcpListener;
 use tower_http::services::ServeDir;
+use web::routes_login;
+pub use self::error::{Error, Result};
+mod error;
+mod web;
+
 
 #[tokio::main]
 async fn main() {
     let router = Router::new()
         .merge(routes_all())
+        .merge(routes_login::routes())
         .fallback_service(routes_static());
 
     let listner = TcpListener::bind("0.0.0.0:3000").await.unwrap();
